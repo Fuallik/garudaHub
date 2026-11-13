@@ -31,7 +31,16 @@ footer{text-align:center;color:#6b7280;font-size:.85rem;margin:30px 0}
 <header><div class="in">
     <a class="brand" href="{{ route('projects.index') }}">Garuda-Hub</a>
     <a href="{{ route('projects.index') }}">Proyek</a>
-    {{-- NAV --}}
+    @auth
+        {{-- NAV:KLIEN --}}
+        {{-- NAV:DASH --}}
+        {{-- NAV:ADMIN --}}
+        <span>{{ auth()->user()->nama }} ({{ auth()->user()->role }})</span>
+        <form class="inline" method="post" action="{{ route('logout') }}">@csrf<button class="sm sec" type="submit">Keluar</button></form>
+    @else
+        <a href="{{ route('login') }}">Masuk</a>
+        <a href="{{ route('register') }}">Daftar</a>
+    @endauth
 </div></header>
 <main>
     @if (session('ok'))<div class="flash ok">{{ session('ok') }}</div>@endif
