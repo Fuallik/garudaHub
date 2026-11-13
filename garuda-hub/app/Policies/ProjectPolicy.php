@@ -15,6 +15,12 @@ class ProjectPolicy
             && $project->status === 'terbuka';
     }
 
+    /** Developer boleh menawar selama lelang masih terbuka. */
+    public function bid(User $user, Project $project): bool
+    {
+        return $user->hasRole('developer') && $project->isOpen();
+    }
+
     /** Hanya klien pemilik proyek. */
     public function delete(User $user, Project $project): bool
     {

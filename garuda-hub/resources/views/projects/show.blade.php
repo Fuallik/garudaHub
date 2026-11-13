@@ -32,12 +32,41 @@
                     <td>Rp {{ number_format($bid->harga, 0, ',', '.') }}</td>
                     <td>{{ $bid->durasi }} hari</td>
                     <td>{!! nl2br(e($bid->proposal)) !!}</td>
-                    <td>{{-- PICK_FORM --}}</td>
+                    <td>@can('update', $project)
+                            <form method="post" action="{{ route('projects.bids.pick', [$project, $bid]) }}" onsubmit="return confirm('Pilih penawaran ini sebagai pemenang?')">
+                                @csrf
+                                <button class="sm">Pilih pemenang</button>
+                            </form>
+                        @endcan</td>
                 </tr>
             @endforeach
         </table>
     @endif
 </div>
 
-{{-- BID_FORM --}}
+@can('bid', $project)
+    <div class="card">
+        <h2>Ajukan Penawaran</h2>
+        <form method="post" action="{{ route('projects.bids.store', $project) }}">
+            @csrf
+            <div class="row">
+                <div><label>Harga (Rp)</label><input type="number" name="harga" min="1" required value="{{ old('harga') }}"></div>
+                <div><label>Durasi (hari)</label><input type="number" name="durasi" min="1" required value="{{ old('durasi') }}"></div>
+            </div>
+            <label>Proposal</label>
+            <textarea name="proposal" maxlength="5000" required>{{ old('proposal') }}</textarea>
+            <p><button>Kirim penawaran</button></p>
+        </form>
+    </div>
+@else
+    @auth
+        @if (auth()->user()->role === 'developer')
+            <div class="card"><p class="muted">Lelang sudah ditutup; penawaran tidak dapat diajukan.</p></div>
+        @endif
+    @else
+        @if ($project->isOpen())
+            <div class="card"><p><a href="{{ route('login') }}">Masuk</a> sebagai developer untuk mengajukan penawaran.</p></div>
+        @endif
+    @endauth
+@endcan
 @endsection
