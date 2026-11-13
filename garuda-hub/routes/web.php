@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BidController;
 use App\Http\Controllers\DashboardController;
@@ -35,6 +36,14 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'role:klien,developer'])
     ->name('dashboard');
+
+// --- Admin
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::patch('/users/{user}/role', [AdminController::class, 'updateRole'])->name('users.role');
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::delete('/projects/{project}', [AdminController::class, 'destroyProject'])->name('projects.destroy');
+});
 
 // --- Lelang
 Route::post('/projects/{project}/bids', [BidController::class, 'store'])

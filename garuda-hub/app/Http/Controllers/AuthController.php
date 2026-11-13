@@ -61,7 +61,7 @@ class AuthController extends Controller
     /** Halaman tujuan setelah login, sesuai peran. */
     private function home(User $user): string
     {
-        return $user->hasRole('admin') ? route('projects.index') : route('dashboard');
+        return $user->hasRole('admin') ? route('admin.index') : route('dashboard');
     }
 
     public function logout(Request $request): RedirectResponse

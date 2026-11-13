@@ -34,7 +34,7 @@ footer{text-align:center;color:#6b7280;font-size:.85rem;margin:30px 0}
     @auth
         @if (auth()->user()->role === 'klien')<a href="{{ route('projects.create') }}">Pasang Proyek</a>@endif
         @if (auth()->user()->role !== 'admin')<a href="{{ route('dashboard') }}">Dasbor</a>@endif
-        {{-- NAV:ADMIN --}}
+@if (auth()->user()->role === 'admin')<a href="{{ route('admin.index') }}">Admin</a>@endif
         <span>{{ auth()->user()->nama }} ({{ auth()->user()->role }})</span>
         <form class="inline" method="post" action="{{ route('logout') }}">@csrf<button class="sm sec" type="submit">Keluar</button></form>
     @else
