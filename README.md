@@ -34,15 +34,16 @@ Website lelang proyek IT: klien memasang proyek, developer menawar, klien memili
    Ini membuat database `garuda_hub` dan **menghapus** tabel `users`, `projects`, `bids` jika sudah ada.
 3. (Opsional) Atur koneksi database lewat variabel lingkungan:
 
-   | Variabel | Bawaan |
-   | --- | --- |
-   | `GH_DB_HOST` | `127.0.0.1` |
-   | `GH_DB_USER` | `root` |
-   | `GH_DB_PASS` | kosong |
+   | Variabel     | Bawaan       |
+   | ------------ | ------------ |
+   | `GH_DB_HOST` | `127.0.0.1`  |
+   | `GH_DB_USER` | `root`       |
+   | `GH_DB_PASS` | kosong       |
    | `GH_DB_NAME` | `garuda_hub` |
-   | `GH_DB_PORT` | `3306` |
+   | `GH_DB_PORT` | `3306`       |
 
    Contoh: `export GH_DB_USER=nama_pengguna_anda`
+
 4. Jalankan server bawaan PHP:
    ```
    php -S localhost:8000 -t src
@@ -65,3 +66,7 @@ Lihat folder `docs/user/` bila tersedia.
 ## Lisensi
 
 MIT. Lihat [LICENSE](LICENSE).
+
+## Versi Laravel (MVC)
+
+Refactor ke Laravel (MVC + Eloquent ORM) ada di folder [`garuda-hub/`](garuda-hub/). Cara menjalankan dan pemetaan dari versi native ada di [`garuda-hub/README.md`](garuda-hub/README.md).

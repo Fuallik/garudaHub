@@ -1,58 +1,56 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Garuda-Hub (Laravel / MVC)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Refactor dari versi PHP native (`../src/index.php`) ke **Laravel** dengan arsitektur **MVC** dan **Eloquent ORM**.
+Fitur sama: klien memasang proyek, developer menawar, klien memilih pemenang. Semua data adalah data dummy.
 
-## About Laravel
+## Skema relasional
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+users (id, nama, email*, password, role)
+  |-- 1:N --> projects (id, client_id -> users.id, judul, deskripsi, kategori,
+  |                     budget_min, budget_max, batas_lelang, status)
+  |-- 1:N --> bids     (id, project_id -> projects.id, developer_id -> users.id,
+                        harga, durasi, proposal, is_winner)   UNIQUE(project_id, developer_id)
+projects --- 1:N --> bids
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Semua foreign key memakai `ON DELETE CASCADE`. Migration ada di `database/migrations`.
 
-## Contributing
+## Pemetaan legacy ke MVC
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| PHP native (`index.php`)                              | Laravel                                                                   |
+| ----------------------------------------------------- | ------------------------------------------------------------------------- |
+| query `mysqli` manual                                 | Model Eloquent: `User`, `Project`, `Bid` (+ relasi)                       |
+| `page_home`, `page_project`, `page_post`, `project_*` | `ProjectController` + `ProjectRequest` + `ProjectPolicy`                  |
+| `page_bid`, `page_pick`, `bid_*`                      | `BidController` + `StoreBidRequest`                                       |
+| `page_dashboard`                                      | `DashboardController`                                                     |
+| `page_admin`, `admin_*`                               | `AdminController`                                                         |
+| `auth_*`, `need_role()`                               | `AuthController`, `RegisterRequest`, middleware `EnsureRole` (`role:...`) |
+| HTML di dalam string PHP                              | Blade di `resources/views`                                                |
+| `?page=...`                                           | `routes/web.php`                                                          |
+| `database.sql`                                        | migration + `DummyDataSeeder`                                             |
 
-## Code of Conduct
+## Menjalankan
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Butuh PHP 8.3+, Composer, dan MySQL/MariaDB.
 
-## Security Vulnerabilities
+```bash
+cd garuda-hub
+composer install
+cp .env.example .env      # Windows PowerShell: copy .env.example .env
+php artisan key:generate
+# buat database `garuda_hub`, sesuaikan DB_* di .env
+php artisan migrate:fresh --seed
+php artisan serve
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `migrate:fresh` menghapus semua tabel lalu migrate ulang; `--seed` menjalankan seeder.
+- Password akun dummy tidak dicantumkan. Daftar akun baru, lalu jadikan admin bila perlu:
 
-## License
+```bash
+php artisan tinker --execute="App\Models\User::where('email', 'EMAIL_KAMU')->update(['role' => 'admin']);"
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Versi Laravel (MVC)
+
+Refactor ke Laravel (MVC + Eloquent ORM) ada di folder [`garuda-hub/`](garuda-hub/). Cara menjalankan dan pemetaan dari versi native ada di [`garuda-hub/README.md`](garuda-hub/README.md).
