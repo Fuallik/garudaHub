@@ -32,7 +32,7 @@ footer{text-align:center;color:#6b7280;font-size:.85rem;margin:30px 0}
     <a class="brand" href="{{ route('projects.index') }}">Garuda-Hub</a>
     <a href="{{ route('projects.index') }}">Proyek</a>
     @auth
-        {{-- NAV:KLIEN --}}
+        @if (auth()->user()->role === 'klien')<a href="{{ route('projects.create') }}">Pasang Proyek</a>@endif
         {{-- NAV:DASH --}}
         {{-- NAV:ADMIN --}}
         <span>{{ auth()->user()->nama }} ({{ auth()->user()->role }})</span>

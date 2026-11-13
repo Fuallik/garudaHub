@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class ProjectController extends Controller
@@ -31,5 +34,43 @@ class ProjectController extends Controller
         ]);
 
         return view('projects.show', compact('project'));
+    }
+
+    public function create(): View
+    {
+        return view('projects.form', ['project' => new Project]);
+    }
+
+    public function store(ProjectRequest $request): RedirectResponse
+    {
+        // client_id selalu diambil dari user yang login, bukan dari form.
+        $project = $request->user()->projects()->create($request->validated());
+
+        return redirect()->route('projects.show', $project)->with('ok', 'Proyek berhasil dipasang.');
+    }
+
+    public function edit(Project $project): View
+    {
+        Gate::authorize('update', $project);
+
+        return view('projects.form', compact('project'));
+    }
+
+    public function update(ProjectRequest $request, Project $project): RedirectResponse
+    {
+        Gate::authorize('update', $project);
+
+        $project->update($request->validated());
+
+        return redirect()->route('projects.show', $project)->with('ok', 'Proyek berhasil diperbarui.');
+    }
+
+    public function destroy(Project $project): RedirectResponse
+    {
+        Gate::authorize('delete', $project);
+
+        $project->delete(); // penawaran ikut terhapus lewat FK cascade
+
+        return redirect()->route('projects.index')->with('ok', 'Proyek dihapus.');
     }
 }

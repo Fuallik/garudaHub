@@ -7,7 +7,16 @@
     <h1>{{ $project->judul }} @include('partials.status', ['status' => $project->status])</h1>
     <p class="muted">Kategori: {{ $project->kategori }} | Klien: {{ $project->client->nama }} | Budget: {{ $project->budgetRange() }} | Batas lelang: {{ $project->batas_lelang->format('Y-m-d') }}</p>
     <p>{!! nl2br(e($project->deskripsi)) !!}</p>
-    {{-- OWNER_ACTIONS --}}
+    @can('update', $project)
+        <a class="btn sm" href="{{ route('projects.edit', $project) }}">Ubah</a>
+    @endcan
+    @can('delete', $project)
+        <form class="inline" method="post" action="{{ route('projects.destroy', $project) }}" onsubmit="return confirm('Hapus proyek beserta penawarannya?')">
+            @csrf
+            @method('DELETE')
+            <button class="sm danger" type="submit">Hapus</button>
+        </form>
+    @endcan
 </div>
 
 <div class="card">
