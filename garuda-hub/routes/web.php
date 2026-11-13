@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BidController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,11 @@ Route::middleware(['auth', 'role:klien'])->group(function () {
 });
 
 Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+
+// --- Dasbor (klien & developer)
+Route::get('/dashboard', DashboardController::class)
+    ->middleware(['auth', 'role:klien,developer'])
+    ->name('dashboard');
 
 // --- Lelang
 Route::post('/projects/{project}/bids', [BidController::class, 'store'])

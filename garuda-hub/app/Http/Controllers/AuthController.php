@@ -55,7 +55,13 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('projects.index'))->with('ok', 'Selamat datang kembali.');
+        return redirect()->intended($this->home($request->user()))->with('ok', 'Selamat datang kembali.');
+    }
+
+    /** Halaman tujuan setelah login, sesuai peran. */
+    private function home(User $user): string
+    {
+        return $user->hasRole('admin') ? route('projects.index') : route('dashboard');
     }
 
     public function logout(Request $request): RedirectResponse
