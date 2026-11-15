@@ -11,7 +11,7 @@
         <a class="btn sm" href="{{ route('projects.edit', $project) }}">Ubah</a>
     @endcan
     @can('delete', $project)
-        <form class="inline" method="post" action="{{ route('projects.destroy', $project) }}" onsubmit="return confirm('Hapus proyek beserta penawarannya?')">
+        <form class="inline" method="post" action="{{ route('projects.destroy', $project) }}" data-confirm="Hapus proyek beserta penawarannya?">
             @csrf
             @method('DELETE')
             <button class="sm danger" type="submit">Hapus</button>
@@ -33,7 +33,7 @@
                     <td>{{ $bid->durasi }} hari</td>
                     <td>{!! nl2br(e($bid->proposal)) !!}</td>
                     <td>@can('update', $project)
-                            <form method="post" action="{{ route('projects.bids.pick', [$project, $bid]) }}" onsubmit="return confirm('Pilih penawaran ini sebagai pemenang?')">
+                            <form method="post" action="{{ route('projects.bids.pick', [$project, $bid]) }}" data-confirm="Pilih penawaran ini sebagai pemenang?">
                                 @csrf
                                 <button class="sm">Pilih pemenang</button>
                             </form>

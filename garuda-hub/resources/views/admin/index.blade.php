@@ -29,7 +29,7 @@
                             </select>
                             <button class="sm" type="submit">Ubah</button>
                         </form>
-                        <form class="inline" method="post" action="{{ route('admin.users.destroy', $u) }}" onsubmit="return confirm('Hapus user beserta proyek dan penawarannya?')">
+                        <form class="inline" method="post" action="{{ route('admin.users.destroy', $u) }}" data-confirm="Hapus user beserta proyek dan penawarannya?">
                             @csrf
                             @method('DELETE')
                             <button class="sm sec" type="submit">Hapus</button>
@@ -52,7 +52,7 @@
                 <td>{{ $p->client->nama }}</td>
                 <td>@include('partials.status', ['status' => $p->status])</td>
                 <td>
-                    <form class="inline" method="post" action="{{ route('admin.projects.destroy', $p) }}" onsubmit="return confirm('Hapus proyek beserta penawarannya?')">
+                    <form class="inline" method="post" action="{{ route('admin.projects.destroy', $p) }}" data-confirm="Hapus proyek beserta penawarannya?">
                         @csrf
                         @method('DELETE')
                         <button class="sm sec" type="submit">Hapus</button>
