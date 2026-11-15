@@ -15,4 +15,13 @@ class SecurityHeadersTest extends TestCase
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
         $response->assertHeader('Content-Security-Policy');
     }
+
+    public function test_security_headers_are_present_on_not_found_pages(): void
+    {
+        $response = $this->get('/halaman-yang-tidak-ada');
+
+        $response->assertNotFound();
+        $response->assertHeader('X-Frame-Options', 'DENY');
+        $response->assertHeader('Content-Security-Policy');
+    }
 }
